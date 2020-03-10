@@ -64,7 +64,7 @@ mongo admin --host localhost:27000 --eval '
 
 mongod --config /etc/mongod.conf
 
-Common issue faced while using conf
+## Common issue faced while using conf
 
 1. ERROR: child process failed, exited with error number 1
 To see additional information in this output, start without the "--fork" option.
