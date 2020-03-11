@@ -148,3 +148,54 @@ edit your config file to use this new directory as the dbpath
   db.shutdownServer()
   quit()
   ````
+Start to see reflected changes
+
+5. ~$ mongod --config /etc/mongod.conf
+Aborted (core dumped)
+Solution: 
+Likely there is an other instance of mongod running. Find the process and kill it
+
+To find process
+vagrant@m103:~$ sudo lsof -i -P -n | grep 27000 
+mongod    2109 vagrant   12u  IPv4  13601      0t0  TCP 127.0.0.1:27000 (LISTEN)
+mongod    2109 vagrant   13u  IPv4  13602      0t0  TCP 192.168.103.100:27000 (LISTEN)
+mongo     2138 vagrant    4u  IPv4  13619      0t0  TCP 127.0.0.1:56336->127.0.0.1:27000 (ESTABLISHED)
+         
+         OR
+	 
+vagrant@m103:~$ sudo lsof -i -P -n | grep mongod
+mongod    2109 vagrant   12u  IPv4  13601      0t0  TCP 127.0.0.1:27000 (LISTEN)
+mongod    2109 vagrant   13u  IPv4  13602      0t0  TCP 192.168.103.100:27000 (LISTEN)
+
+``kill -9 2109``
+
+6. Detected unclean shutdown - /data/db/mongod.lock is not empty.
+
+Solution: ``mongod --repair``
+
+*Not recommanded but if you want to repair your data files without preserving the original files*
+
+sudo rm /var/lib/mongodb/mongod.lock
+sudo mongod --dbpath /var/lib/mongodb/ --repair
+sudo mongod --dbpath /var/lib/mongodb/ --journal
+
+Make sure that you leave you terminal running in which you have run above lines, don't press 'Ctrl+c' or quit it. Type the command to start mongo now in another window.
+
+7. Error: couldn't connect to server localhost:27000, connection attempt failed: SocketException: Error connecting to localhost:27000 (127.0.0.1:27000) :: caused by :: Connection refused :
+connect@src/mongo/shell/mongo.js:343:13
+@(connect):2:6
+exception: connect failed
+
+Hint: Check the mongod logs for failure
+
+8. exception in initAndListen: 29 Data directory /data/db not found., terminating
+
+Error happen because dbpath /data/db/ (default config) does not exist. You need to create data folder and set permission for it.
+
+``sudo mkdir -p /data/db/ 
+  and  sudo chown id -u /data/db``
+
+then start the mongo
+
+
+   
