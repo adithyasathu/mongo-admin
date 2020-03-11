@@ -93,7 +93,7 @@ Error: Authentication failed.
   Solution: Login with user credentials 
   `mongo --host localhost:27000  --authenticationDatabase "admin" -u "m103-admin" -p "m103-pass"`
   
-3. E QUERY    [thread1] Error: listDatabases failed:{
+3.  QUERY    [thread1] Error: listDatabases failed:{
 	"ok" : 0,
 	"errmsg" : "not master and slaveOk=false",
 	"code" : 13435,
@@ -106,6 +106,7 @@ shellHelper@src/mongo/shell/utils.js:750:15
 @(shellhelp2):1:1
 
 Solution
+Note: rs is the replication set
 
 MongoDB Enterprise > `` rs.status() ``
 {
@@ -133,6 +134,17 @@ MongoDB Enterprise M103:OTHER> ``rs.status()``
 	"heartbeatIntervalMillis" : NumberLong(2000),
   ....... Not complete
   
+   
+
+4.  Different DB path than the default path /data/db. Mongod will now store data files in this new directory instead.
+
+create a new folder /var/mongodb/db/ and allow mongod to write files to this directory
+create this directory with sudo, because /var is owned by root
+use chown to change the owner of this directory to vagrant:vagrant
+edit your config file to use this new directory as the dbpath
   
-  
-  
+  ````
+  use admin
+  db.shutdownServer()
+  quit()
+  ````
