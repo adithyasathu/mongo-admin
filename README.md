@@ -74,7 +74,7 @@ vagrant@m103:~$ mongod --config /etc/mongod.conf
 ```
 2020-03-09T12:28:25.617+0000 F CONTROL  [main] Failed global initialization: FileNotOpen: Failed to open "/first_mongod/mongod.log"
 
-  Solution : Make sure the folder is created, else create it using mkdir and assign RW access
+_Solution_: Make sure the folder is created, else create it using mkdir and assign RW access
   
   ```
   sudo chown vagrant:vagrant first_mongod/mongod.log
@@ -94,7 +94,8 @@ shellHelper@src/mongo/shell/utils.js:750:15
 @(shellhelp2):1:1
 MongoDB Enterprise > db.auth('m103-admin','m103-pass')
 Error: Authentication failed.
-  Solution: Login with user credentials 
+
+_Solution_: Login with user credentials 
   ```
   mongo --host localhost:27000  --authenticationDatabase "admin" -u "m103-admin" -p "m103-pass"
   ```
@@ -111,10 +112,12 @@ shellHelper.show@src/mongo/shell/utils.js:860:19
 shellHelper@src/mongo/shell/utils.js:750:15
 @(shellhelp2):1:1
 
-Solution
+_Solution_:
 Note: rs is the replication set
 
-MongoDB Enterprise > ``` rs.status() ```
+MongoDB Enterprise > 
+```
+rs.status() 
 {
 	"info" : "run rs.initiate(...) if not yet done for the set",
 	"ok" : 0,
@@ -122,13 +125,19 @@ MongoDB Enterprise > ``` rs.status() ```
 	"code" : 94,
 	"codeName" : "NotYetInitialized"
 }
-MongoDB Enterprise > ```rs.initiate() ```
+```
+MongoDB Enterprise > 
+```
+rs.initiate() 
 {
 	"info2" : "no configuration specified. Using a default configuration for the set",
 	"me" : "192.168.103.100:27000",
 	"ok" : 1
 }
-MongoDB Enterprise M103:OTHER> ```rs.status()```
+```
+MongoDB Enterprise M103:OTHER>
+```
+rs.status()
 {
 	"set" : "M103",
 	"date" : ISODate("2020-03-09T12:49:58.116Z"),
@@ -138,12 +147,12 @@ MongoDB Enterprise M103:OTHER> ```rs.status()```
 	"syncSourceHost" : "",
 	"syncSourceId" : -1,
 	"heartbeatIntervalMillis" : NumberLong(2000),
-  ....... Not complete
-  
+ ( Not complete)
+  ```
    
 
 4.  Different DB path than the default path /data/db. Mongod will now store data files in this new directory instead.
-
+_Solution_:
 create a new folder /var/mongodb/db/ and allow mongod to write files to this directory
 create this directory with sudo, because /var is owned by root
 use chown to change the owner of this directory to vagrant:vagrant
@@ -156,9 +165,12 @@ edit your config file to use this new directory as the dbpath
   ```
 Start to see reflected changes
 
-5. ~$ mongod --config /etc/mongod.conf
+5.
+```
+~$ mongod --config /etc/mongod.conf
 Aborted (core dumped)
-Solution: 
+```
+_Solution_: 
 Likely there is an other instance of mongod running. Find the process and kill it
 
 **To find process**
@@ -167,21 +179,23 @@ vagrant@m103:~$ sudo lsof -i -P -n | grep 27000
 mongod    2109 vagrant   12u  IPv4  13601      0t0  TCP 127.0.0.1:27000 (LISTEN)
 mongod    2109 vagrant   13u  IPv4  13602      0t0  TCP 192.168.103.100:27000 (LISTEN)
 mongo     2138 vagrant    4u  IPv4  13619      0t0  TCP 127.0.0.1:56336->127.0.0.1:27000 (ESTABLISHED)
- ```        
-         OR
-```	 
+
+
 vagrant@m103:~$ sudo lsof -i -P -n | grep mongod
 mongod    2109 vagrant   12u  IPv4  13601      0t0  TCP 127.0.0.1:27000 (LISTEN)
 mongod    2109 vagrant   13u  IPv4  13602      0t0  TCP 192.168.103.100:27000 (LISTEN)
 ```
 **To kill the process**
-``kill -9 2109``
+```kill -9 2109```
 
 6. Detected unclean shutdown - /data/db/mongod.lock is not empty.
 
-Solution: ```mongod --repair```
+_Solution_: 
+```
+mongod --repair
+```
 
-*Not recommanded but if you want to repair your data files without preserving the original files*
+**Not recommanded but if you want to repair your data files without preserving the original files**
 ```
 sudo rm /var/lib/mongodb/mongod.lock
 sudo mongod --dbpath /var/lib/mongodb/ --repair
@@ -194,10 +208,10 @@ connect@src/mongo/shell/mongo.js:343:13
 @(connect):2:6
 exception: connect failed
 
-Hint: Check the mongod logs for failure
+_Hint_: Check the mongod logs for failure
 
 8. exception in initAndListen: 29 Data directory /data/db not found., terminating
-
+_Solution_:
 Error happen because dbpath /data/db/ (default config) does not exist. You need to create data folder and set permission for it.
 
 ```
