@@ -1,6 +1,10 @@
 # mongo-admin
 Basic Cluster Administration
 
+*mongod* is the core database process.
+*mongo* is the interactive MongoDB shell that you use to connect to mongod.
+
+
 ### mongod shell command
 ```
 mongod --dbpath /data/db --logpath /data/log/mongod.log --fork --replSet "M103" --keyFile /data/keyfile --bind_ip "127.0.0.1,192.168.103.100" --tlsMode requireTLS --tlsCAFile "/etc/tls/TLSCA.pem" --tlsCertificateKeyFile "/etc/tls/tls.pem"
@@ -58,7 +62,17 @@ mongo admin --host localhost:27000 --eval '
   })
 '
 ```
-  
+ 
+### Create application user 
+```
+db.createUser(
+  { user: "m103-application-user",
+    pwd: "m103-application-pass",
+    roles: [ { db: "applicationData", role: "readWrite" } ]
+  }
+)
+
+``` 
   
 ### Assign conf file to mongod
 ```
